@@ -12,7 +12,7 @@ import java.util.List;
 
 import dev.chenjr.tracer.Bean.User;
 
-import static dev.chenjr.tracer.utils.StatusConstant.LOGIN_EXCEPTION_ACCURS;
+import static dev.chenjr.tracer.utils.StatusConstant.LOGIN_EXCEPTION_OCCURS;
 import static dev.chenjr.tracer.utils.StatusConstant.LOGIN_FAIL_PASSWORD_MISMATCH;
 import static dev.chenjr.tracer.utils.StatusConstant.LOGIN_FAIL_USER_NOT_FOUND;
 import static dev.chenjr.tracer.utils.StatusConstant.LOGIN_SUCCESS;
@@ -26,7 +26,6 @@ public class DatabaseHelper {
 
     private Dao<User, Integer> userDao;
     private User currentUser;
-//    private Dao<Order, Integer> orderDao;
 
     private DatabaseHelper() throws IOException {
         JdbcConnectionSource connectionSource = null;
@@ -66,7 +65,7 @@ public class DatabaseHelper {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return LOGIN_EXCEPTION_ACCURS;
+            return LOGIN_EXCEPTION_OCCURS;
         }
 
     }
@@ -76,11 +75,17 @@ public class DatabaseHelper {
      *
      * @return
      */
-    public static synchronized DatabaseHelper getHelper() throws IOException {
+    public static synchronized DatabaseHelper getHelper() {
         if (instance == null) {
             synchronized (DatabaseHelper.class) {
-                if (instance == null)
-                    instance = new DatabaseHelper();
+                if (instance == null) {
+                    try {
+                        instance = new DatabaseHelper();
+                    } catch (IOException e) {
+                        // 请注意, 这玩意儿能返回空值
+                        instance = null;
+                    }
+                }
             }
         }
 

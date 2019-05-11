@@ -79,12 +79,9 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected Integer doInBackground(String... strings) {
             Log.d(TAG, "doInBackground: " + strings);
-            try {
-                return DatabaseHelper.getHelper().authUser(user, Util.string2MD5(pass));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
+
+            return DatabaseHelper.getHelper().authUser(user, Util.string2MD5(pass));
+
         }
 
         @Override
