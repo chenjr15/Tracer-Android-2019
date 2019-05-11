@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.support.design.button.MaterialButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.et_login_password)
     EditText password;
     @BindView(R.id.btn_login_login)
-    Button loginBtn;
+    MaterialButton loginBtn;
     String user;
     String pass;
 
