@@ -4,18 +4,22 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.button.MaterialButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import dev.chenjr.tracer.R;
 import dev.chenjr.tracer.adapter.UserAdapter;
@@ -46,6 +50,11 @@ public class UserManageFragment extends Fragment {
 
     @BindView(R.id.rv_fragment_user)
     RecyclerView recyclerView;
+    @BindView(R.id.et_fragment_user_manage_account_search)
+    EditText searchContent;
+    @BindView(R.id.btn_frag_user_manage_account_search)
+    MaterialButton searchBtn;
+    String filterString;
     List<User> userList;
 
     public UserManageFragment() {
@@ -84,10 +93,18 @@ public class UserManageFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user_manage, container, false);
-        unbinder = ButterKnife.bind(this,view);
+        unbinder = ButterKnife.bind(this, view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         new QueryUserTask().execute();
         return view;
+    }
+
+    @OnClick(R.id.btn_frag_user_manage_account_search)
+    public void onSearch() {
+        filterString = searchContent.getText().toString();
+        new QueryUserTask().execute();
+
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -113,6 +130,7 @@ public class UserManageFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -133,25 +151,42 @@ public class UserManageFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-    class QueryUserTask extends AsyncTask<Void,Boolean,List<User>>{
+
+    class QueryUserTask extends AsyncTask<Void, Boolean, List<User>> {
 
         @Override
         protected void onPostExecute(List<User> users) {
             super.onPostExecute(users);
-            userList = users;
-            recyclerView.setAdapter(new UserAdapter(userList));
+            if (filterString != null && !"".equals(filterString)) {
+                userList = new ArrayList<>();
+                for (User u : users) {
+                    if (u.getAccount()!=null && u.getAccount().startsWith(filterString)){
+                        userList.add(u);
+                    }
+                }
+            } else {
+                userList = users;
+            }
+
+            updateList();
         }
 
         @Override
         protected List<User> doInBackground(Void... voids) {
             List<User> users = null;
             try {
-               users = new UserDao().getAllWithLimit(100);
+                users = new UserDao().getAllWithLimit(100);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
 
+
             return users;
         }
+    }
+
+    private void updateList() {
+
+        recyclerView.setAdapter(new UserAdapter(userList));
     }
 }

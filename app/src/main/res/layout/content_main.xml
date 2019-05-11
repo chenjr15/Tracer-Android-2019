@@ -9,15 +9,14 @@
     tools:showIn="@layout/app_bar_main">
 
 
-    <fragment
+    <FrameLayout
         android:id="@+id/fragment_main_container"
-        android:name="dev.chenjr.tracer.fragment.UserManageFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    </fragment>
+    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>
