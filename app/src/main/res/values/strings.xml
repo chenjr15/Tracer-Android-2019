@@ -16,4 +16,13 @@
     <string name="hint_et_login_user">Account here</string>
     <string name="hind_et_login_password">Password</string>
     <string name="text_btn_login_login">Login</string>
+    <string name="item_nav_user_management">User Management</string>
+    <string name="item_nav_realtime_loc">Realtime Location</string>
+    <string name="item_nav_device_info_management">Device Infomation Management</string>
+    <string name="item_nav_device_config">Device Configure</string>
+    <string name="item_nav_device_data_show">Device Data Reveal</string>
+    <string name="item_nav_history_loc">History Location</string>
+    <string name="item_nav_event_data">Event Data</string>
+    <string name="item_nav_wet_chart">Humidity Curve</string>
+    <string name="item_nav_temp_chart">Temperature Curve</string>
 </resources>

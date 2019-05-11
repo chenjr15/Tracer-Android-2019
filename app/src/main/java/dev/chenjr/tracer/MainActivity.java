@@ -13,14 +13,24 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.TextView;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+
+    TextView headerUsername;
+
+    TextView headerUserEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -77,18 +87,21 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_home) {
+        if (id == R.id.nav_user_management) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_realtime_loc) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_device_info_management) {
 
-        } else if (id == R.id.nav_tools) {
+        } else if (id == R.id.nav_device_config) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_history_loc) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_event_data) {
+
+        } else if (id == R.id.nav_wet_chart) {
+
+        } else if (id == R.id.nav_temp_chart) {
 
         }
 

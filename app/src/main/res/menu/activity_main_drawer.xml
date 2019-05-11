@@ -5,34 +5,45 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="@string/menu_home" />
+            android:id="@+id/nav_user_management"
+            android:icon="@drawable/ic_users"
+            android:title="@string/item_nav_user_management" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_gallery" />
+            android:id="@+id/nav_realtime_loc"
+            android:icon="@drawable/ic_map_marker"
+            android:title="@string/item_nav_realtime_loc" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/menu_slideshow" />
+            android:id="@+id/nav_device_info_management"
+            android:icon="@drawable/ic_info"
+            android:title="@string/item_nav_device_info_management" />
         <item
-            android:id="@+id/nav_tools"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="@string/menu_tools" />
-    </group>
+            android:id="@+id/nav_device_config"
+            android:icon="@drawable/ic_cog"
+            android:title="@string/item_nav_device_config" />
 
-    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="@string/menu_share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="@string/menu_send" />
-        </menu>
-    </item>
+
+        <item
+            android:checkable="false"
+            android:title="@string/item_nav_device_data_show" />
+
+        <item
+            android:id="@+id/nav_history_loc"
+            android:icon="@drawable/ic_map"
+            android:title="@string/item_nav_history_loc" />
+        <item
+            android:id="@+id/nav_event_data"
+            android:icon="@drawable/ic_database"
+            android:title="@string/item_nav_event_data" />
+        <item
+            android:id="@+id/nav_wet_chart"
+            android:icon="@drawable/ic_bar_chart"
+            android:title="@string/item_nav_wet_chart" />
+        <item
+            android:id="@+id/nav_temp_chart"
+            android:icon="@drawable/ic_thermometer"
+            android:title="@string/item_nav_temp_chart" />
+
+
+    </group>
 
 </menu>
