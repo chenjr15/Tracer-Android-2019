@@ -1,4 +1,4 @@
-package dev.chenjr.tracer.Bean;
+package dev.chenjr.tracer.bean;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;

@@ -12,11 +12,15 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import dev.chenjr.tracer.bean.User;
 import dev.chenjr.tracer.db.DatabaseHelper;
+import dev.chenjr.tracer.db.UserDao;
+import dev.chenjr.tracer.utils.StatusConstant;
 import dev.chenjr.tracer.utils.Util;
 
 import static dev.chenjr.tracer.utils.StatusConstant.LOGIN_SUCCESS;
@@ -80,7 +84,12 @@ public class LoginActivity extends AppCompatActivity {
         protected Integer doInBackground(String... strings) {
             Log.d(TAG, "doInBackground: " + strings);
 
-            return DatabaseHelper.getHelper().authUser(user, Util.string2MD5(pass));
+            try {
+                return new UserDao().authUser(user, Util.string2MD5(pass));
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return StatusConstant.LOGIN_EXCEPTION_OCCURS;
+            }
 
         }
 

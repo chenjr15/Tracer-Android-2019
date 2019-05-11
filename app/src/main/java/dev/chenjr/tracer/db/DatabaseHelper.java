@@ -8,9 +8,11 @@ import com.j256.ormlite.jdbc.JdbcConnectionSource;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import dev.chenjr.tracer.Bean.User;
+import dev.chenjr.tracer.bean.User;
 
 import static dev.chenjr.tracer.utils.StatusConstant.LOGIN_EXCEPTION_OCCURS;
 import static dev.chenjr.tracer.utils.StatusConstant.LOGIN_FAIL_PASSWORD_MISMATCH;
@@ -23,19 +25,21 @@ public class DatabaseHelper {
     private final static String DB_PASSWORD = "tracer_db";
     private static final String TAG = "DatabaseHelper";
     private static DatabaseHelper instance;
+    private JdbcConnectionSource connectionSource = null;
 
+    private Map<String, Dao> daos = new HashMap<String, Dao>();
     private Dao<User, Integer> userDao;
     private User currentUser;
 
     private DatabaseHelper() throws IOException {
-        JdbcConnectionSource connectionSource = null;
+
         try {
             // create our data source
             connectionSource = new JdbcConnectionSource(DATABASE_URL, DB_USER, DB_PASSWORD);
-            // setup our database and DAOs
-            setupDatabase(connectionSource);
+//            // setup our database and DAOs
+//            setupDatabase(connectionSource);
 
-            System.out.println("\n\nIt seems to have worked\n\n");
+            Log.d(TAG, "DatabaseHelper: DB init success");
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -51,24 +55,7 @@ public class DatabaseHelper {
         userDao = DaoManager.createDao(connectionSource, User.class);
     }
 
-    public Integer authUser(String user, String passwordMD5) {
-        try {
 
-            List<User> account = userDao.queryForEq("account", user);
-
-            if (account == null || account.isEmpty()){
-                return LOGIN_FAIL_USER_NOT_FOUND;
-            }
-            currentUser = account.get(0);
-            Log.d(TAG, "authUser: "+passwordMD5+"\n"+account.get(0).getPswd());
-            return passwordMD5.equals(currentUser.getPswd())?LOGIN_SUCCESS:LOGIN_FAIL_PASSWORD_MISMATCH;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return LOGIN_EXCEPTION_OCCURS;
-        }
-
-    }
 
     /**
      * 单例获取该Helper
@@ -92,7 +79,37 @@ public class DatabaseHelper {
         return instance;
     }
 
+    public synchronized Dao getDao(Class clazz) throws SQLException
+    {
+        Dao dao = null;
+        String className = clazz.getSimpleName();
+
+        if (daos.containsKey(className))
+        {
+            dao = daos.get(className);
+        }
+        if (dao == null)
+        {
+            dao = DaoManager.createDao(connectionSource, User.class);
+            daos.put(className, dao);
+        }
+        return dao;}
+
+
+        /**
+         *
+         */
+    public void close() throws IOException {
+        if (connectionSource != null) {
+            connectionSource.close();
+        }
+    }
+
     public User getCurrentUser() {
         return currentUser;
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
     }
 }
