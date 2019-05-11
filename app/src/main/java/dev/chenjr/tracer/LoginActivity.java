@@ -13,6 +13,7 @@ import android.widget.EditText;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected Integer doInBackground(String... strings) {
-            Log.d(TAG, "doInBackground: " + strings);
+            Log.d(TAG, "doInBackground: " + Arrays.toString(strings));
 
             try {
                 return new UserDao().authUser(user, Util.string2MD5(pass));

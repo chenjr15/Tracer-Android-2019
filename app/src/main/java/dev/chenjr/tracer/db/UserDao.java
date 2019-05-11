@@ -3,6 +3,7 @@ package dev.chenjr.tracer.db;
 import android.util.Log;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.QueryBuilder;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -45,6 +46,46 @@ public class UserDao {
             e.printStackTrace();
             return LOGIN_EXCEPTION_OCCURS;
         }
+
+    }
+
+    public User getUserByAccount(String accountStr) {
+        List<User> account = null;
+        try {
+            account = userDao.queryForEq("account", accountStr);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        if (account == null || account.isEmpty()) {
+            return null;
+        }
+        return account.get(0);
+    }
+
+    public User getUserById(long id) {
+        List<User> account = null;
+        try {
+            account = userDao.queryForEq("id", id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        if (account == null || account.isEmpty()) {
+            return null;
+        }
+        return account.get(0);
+    }
+
+    public List<User> getAllWithLimit(long limit) {
+        List<User> users = null;
+        QueryBuilder queryBuilder = userDao.queryBuilder();
+        try {
+            users = queryBuilder.limit(limit).query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
 
     }
 }

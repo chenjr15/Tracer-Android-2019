@@ -1,7 +1,11 @@
 package dev.chenjr.tracer;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -14,9 +18,10 @@ import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import dev.chenjr.tracer.db.DatabaseHelper;
+import dev.chenjr.tracer.fragment.UserManageFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, UserManageFragment.OnFragmentInteractionListener {
 
 
     TextView headerUsername;
@@ -84,6 +89,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_user_management) {
+            replaceFragment(UserManageFragment.newInstance("1","2"));
             // Handle the camera action
         } else if (id == R.id.nav_realtime_loc) {
 
@@ -104,5 +110,21 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /** 替换当前显示的Fragment
+     * @param fragment 要显示的Fragment
+     */
+    private void  replaceFragment(Fragment fragment){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment_main_container,fragment);
+        transaction.commit();
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+
     }
 }
