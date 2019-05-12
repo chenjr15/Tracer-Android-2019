@@ -179,7 +179,7 @@ public class TempGrapFragment extends BaseFragment implements OnSpinerItemClick 
     @Override
     public void onClick(String item, int position) {
         selectedDevice = allDevice.get(position);
-        updateChart();
+        queryCurrentDev();
 
     }
 
