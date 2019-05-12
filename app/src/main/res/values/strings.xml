@@ -25,4 +25,8 @@
     <string name="item_nav_event_data">Event Data</string>
     <string name="item_nav_wet_chart">Humidity Curve</string>
     <string name="item_nav_temp_chart">Temperature Curve</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="item_nav_index">Control Center</string>
 </resources>

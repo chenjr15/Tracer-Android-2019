@@ -12,4 +12,7 @@
 /captures
 .externalNativeBuild
 app/bin
+*.class
+.project
+
 

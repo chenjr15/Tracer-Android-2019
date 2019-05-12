@@ -1,6 +1,5 @@
 package dev.chenjr.tracer;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -16,24 +15,31 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import dev.chenjr.tracer.db.DatabaseHelper;
+import dev.chenjr.tracer.fragment.BaseFragment;
+import dev.chenjr.tracer.fragment.DevInfoFragment;
+import dev.chenjr.tracer.fragment.IndexFragment;
 import dev.chenjr.tracer.fragment.UserManageFragment;
+import dev.chenjr.tracer.utils.StatusConstant;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, UserManageFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, BaseFragment.OnFragmentInteractionListener {
 
 
     TextView headerUsername;
 
     TextView headerUserEmail;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+//        Toolbar toolbar = findViewById();
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -88,43 +94,85 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        StatusConstant.FragmentID fragmentID = StatusConstant.FragmentID.INDEX;
         if (id == R.id.nav_user_management) {
-            replaceFragment(UserManageFragment.newInstance("1","2"));
+            fragmentID = StatusConstant.FragmentID.USER_MANAGEMENT;
+
             // Handle the camera action
         } else if (id == R.id.nav_realtime_loc) {
+            fragmentID = StatusConstant.FragmentID.REAL_TIME_LOCATION;
 
         } else if (id == R.id.nav_device_info_management) {
+            fragmentID = StatusConstant.FragmentID.DEVICE_INFO_MANAGEMENT;
 
         } else if (id == R.id.nav_device_config) {
+            fragmentID = StatusConstant.FragmentID.DEVICE_CONFIGURE;
 
         } else if (id == R.id.nav_history_loc) {
+            fragmentID = StatusConstant.FragmentID.HISTORY_LOCATION;
 
         } else if (id == R.id.nav_event_data) {
+            fragmentID = StatusConstant.FragmentID.EVENT_DATA;
 
         } else if (id == R.id.nav_wet_chart) {
+            fragmentID = StatusConstant.FragmentID.HUMIDITY_CURVE;
 
         } else if (id == R.id.nav_temp_chart) {
+            fragmentID = StatusConstant.FragmentID.TEMPERATURE_CURVE;
 
         }
+        replaceFragment(fragmentID);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    /** 替换当前显示的Fragment
-     * @param fragment 要显示的Fragment
+    /**
+     * 替换当前显示的Fragment
      */
-    private void  replaceFragment(Fragment fragment){
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragment_main_container,fragment);
-        transaction.commit();
+    private void replaceFragment(StatusConstant.FragmentID fragmentID) {
+        Fragment fragmentObj = null;
+        switch (fragmentID) {
+            case INDEX:
+                fragmentObj = IndexFragment.newInstance();
+                toolbar.setTitle(R.string.item_nav_index);
+
+                break;
+            case USER_MANAGEMENT:
+                fragmentObj = UserManageFragment.newInstance();
+                toolbar.setTitle(R.string.item_nav_user_management);
+
+                break;
+            case DEVICE_INFO_MANAGEMENT:
+                toolbar.setTitle(R.string.item_nav_device_config);
+                fragmentObj = DevInfoFragment.newInstance();
+                break;
+            default:
+                toolbar.setTitle(R.string.app_name);
+                fragmentObj = IndexFragment.newInstance();
+
+        }
+        if (fragmentObj != null)
+            replaceFragment(fragmentObj);
     }
 
+    /**
+     * 替换当前显示的Fragment
+     *
+     * @param fragment 要显示的Fragment
+     */
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment_main_container, fragment);
+        transaction.commit();
+
+    }
+
+
     @Override
-    public void onFragmentInteraction(Uri uri) {
-
-
+    public void onFragmentInteraction(StatusConstant.FragmentID fragmentID) {
+        replaceFragment(fragmentID);
     }
 }

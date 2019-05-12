@@ -21,7 +21,7 @@ import static dev.chenjr.tracer.utils.StatusConstant.LOGIN_SUCCESS;
 public class UserDao {
 
     private static final String TAG = "UserDao";
-    private Dao<User, Integer> userDao;
+    private Dao<User, Long> userDao;
     private DatabaseHelper helper;
 
     public UserDao() throws SQLException {

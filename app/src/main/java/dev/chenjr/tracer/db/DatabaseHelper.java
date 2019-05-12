@@ -9,15 +9,10 @@ import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import dev.chenjr.tracer.bean.User;
 
-import static dev.chenjr.tracer.utils.StatusConstant.LOGIN_EXCEPTION_OCCURS;
-import static dev.chenjr.tracer.utils.StatusConstant.LOGIN_FAIL_PASSWORD_MISMATCH;
-import static dev.chenjr.tracer.utils.StatusConstant.LOGIN_FAIL_USER_NOT_FOUND;
-import static dev.chenjr.tracer.utils.StatusConstant.LOGIN_SUCCESS;
 
 public class DatabaseHelper {
     private final static String DATABASE_URL = "jdbc:mysql://119.23.34.173/Tracer";
@@ -28,7 +23,6 @@ public class DatabaseHelper {
     private JdbcConnectionSource connectionSource = null;
 
     private Map<String, Dao> daos = new HashMap<String, Dao>();
-    private Dao<User, Integer> userDao;
     private User currentUser;
 
     private DatabaseHelper() throws IOException {
@@ -49,10 +43,6 @@ public class DatabaseHelper {
             }
         }
 
-    }
-
-    private void setupDatabase(JdbcConnectionSource connectionSource) throws SQLException {
-        userDao = DaoManager.createDao(connectionSource, User.class);
     }
 
 
@@ -79,26 +69,24 @@ public class DatabaseHelper {
         return instance;
     }
 
-    public synchronized Dao getDao(Class clazz) throws SQLException
-    {
+    public synchronized Dao getDao(Class clazz) throws SQLException {
         Dao dao = null;
         String className = clazz.getSimpleName();
 
-        if (daos.containsKey(className))
-        {
+        if (daos.containsKey(className)) {
             dao = daos.get(className);
         }
-        if (dao == null)
-        {
-            dao = DaoManager.createDao(connectionSource, User.class);
+        if (dao == null) {
+            dao = DaoManager.createDao(connectionSource, clazz);
             daos.put(className, dao);
         }
-        return dao;}
+        return dao;
+    }
 
 
-        /**
-         *
-         */
+    /**
+     *
+     */
     public void close() throws IOException {
         if (connectionSource != null) {
             connectionSource.close();
