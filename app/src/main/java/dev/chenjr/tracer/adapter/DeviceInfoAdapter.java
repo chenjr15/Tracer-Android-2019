@@ -29,8 +29,8 @@ public class DeviceInfoAdapter extends RecyclerView.Adapter<DeviceInfoAdapter.Vi
         TextView tvSn;
         @BindView(R.id.tv_item_dev_info_model)
         TextView tvModel;
-        @BindView(R.id.tv_item_dev_info_sim_no)
-        TextView tvSimNo;
+        @BindView(R.id.tv_item_dev_info_iccid_no)
+        TextView tvICCID;
         @BindView(R.id.tv_item_dev_info_remark)
         TextView tvRemark;
         @BindView(R.id.tv_item_dev_info_create_time)
@@ -59,11 +59,11 @@ public class DeviceInfoAdapter extends RecyclerView.Adapter<DeviceInfoAdapter.Vi
     public void onBindViewHolder(@NonNull DeviceInfoAdapter.ViewHolder viewHolder, int i) {
         DeviceInfo deviceInfo = deviceInfoList.get(i);
         viewHolder.tvConNo.setText(deviceInfo.getContainerNo());
-        viewHolder.tvDevId.setText(deviceInfo.getDevIccid());
+        viewHolder.tvDevId.setText(deviceInfo.getDeviceid());
         viewHolder.tvLastModTime.setText(Util.timeago(deviceInfo.getCreateTime()));
         viewHolder.tvLastModUser.setText(deviceInfo.getCreateUser());
         viewHolder.tvModel.setText(deviceInfo.getModel());
-        viewHolder.tvSimNo.setText(deviceInfo.getDevSimNo());
+        viewHolder.tvICCID.setText(deviceInfo.getDevIccid());
         viewHolder.tvSn.setText(deviceInfo.getSerialNumber());
         viewHolder.tvRemark.setText(deviceInfo.getRemark());
 
