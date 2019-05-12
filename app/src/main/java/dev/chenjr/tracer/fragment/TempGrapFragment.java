@@ -65,6 +65,9 @@ public class TempGrapFragment extends BaseFragment implements OnSpinerItemClick 
     private List<DeviceHistoryData> tempInList;
     private List<DeviceHistoryData> tempOutList;
     LineData lineData;
+    QueryAllDevice queryAllDeviceTask;
+    QueryDeviceHistoryDataTask queryDeviceHistoryTask;
+    QueryTempOutTask queryTempOutTask;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -84,7 +87,8 @@ public class TempGrapFragment extends BaseFragment implements OnSpinerItemClick 
         chart.getXAxis().setDrawGridLines(false);
 
         lineData = new LineData();
-        new QueryAllDevice().execute();
+        queryAllDeviceTask = new QueryAllDevice();
+        queryAllDeviceTask.execute();
 
     }
 
@@ -110,7 +114,7 @@ public class TempGrapFragment extends BaseFragment implements OnSpinerItemClick 
 
     void queryCurrentDev() {
 
-        if (selectedDevice != null){
+        if (selectedDevice != null) {
             selectedDevId = selectedDevice.getDeviceid();
             tvConNo.setText(selectedDevice.getContainerNo());
             tvDevId.setText(selectedDevice.getDeviceid());
@@ -121,8 +125,10 @@ public class TempGrapFragment extends BaseFragment implements OnSpinerItemClick 
             tvSn.setText(selectedDevice.getSerialNumber());
             tvRemark.setText(selectedDevice.getRemark());
         }
-        new QueryDeviceHistoryDataTask().execute();
-        new QueryTempOutTask().execute();
+        queryDeviceHistoryTask = new QueryDeviceHistoryDataTask();
+        queryTempOutTask = new QueryTempOutTask();
+        queryDeviceHistoryTask.execute();
+        queryTempOutTask.execute();
     }
 
     public void updateChart() {
@@ -184,7 +190,7 @@ public class TempGrapFragment extends BaseFragment implements OnSpinerItemClick 
             super.onPostExecute(deviceHistoryDatas);
 
             tempInList = deviceHistoryDatas;
-            queryCurrentDev();
+            updateChart();
 
         }
 
@@ -261,5 +267,20 @@ public class TempGrapFragment extends BaseFragment implements OnSpinerItemClick 
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();//视图销毁时必须解绑
+
+        if (queryAllDeviceTask.getStatus() != AsyncTask.Status.FINISHED) {
+            queryAllDeviceTask.cancel(true);
+        }
+        if (queryTempOutTask.getStatus() != AsyncTask.Status.FINISHED) {
+            queryTempOutTask.cancel(true);
+        }
+        if (queryDeviceHistoryTask.getStatus() != AsyncTask.Status.FINISHED) {
+            queryDeviceHistoryTask.cancel(true);
+        }
+        if (chart != null) {
+            chart.clear();
+        }
+
+
     }
 }
