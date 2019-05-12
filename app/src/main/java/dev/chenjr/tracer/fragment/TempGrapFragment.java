@@ -25,6 +25,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import dev.chenjr.tracer.R;
 import dev.chenjr.tracer.bean.DeviceHistoryData;
+import dev.chenjr.tracer.bean.DeviceInfo;
+import dev.chenjr.tracer.db.DevInfoDao;
 import dev.chenjr.tracer.db.DeviceHistoryDataDao;
 import dev.chenjr.tracer.utils.Util;
 
@@ -35,6 +37,7 @@ public class TempGrapFragment extends BaseFragment {
     @BindView(R.id.chart_temp)
     LineChart chart;
     String selectedDevId;
+    List<DeviceInfo> allDevice;
     private List<DeviceHistoryData> tempInList;
     private List<DeviceHistoryData> tempOutList;
     LineData lineData;
@@ -51,14 +54,18 @@ public class TempGrapFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        new QueryDeviceHistoryDataTask().execute();
-        new QueryTempOutTask().execute();
+
 
         chart.getXAxis().setValueFormatter(new Util.DateFormater());
         chart.getXAxis().setDrawGridLines(false);
 
         lineData = new LineData();
+        new QueryAllDevice().execute();
 
+    }
+    void queryCurrentDev(){
+        new QueryDeviceHistoryDataTask().execute();
+        new QueryTempOutTask().execute();
     }
 
     public void updateChart() {
@@ -153,7 +160,34 @@ public class TempGrapFragment extends BaseFragment {
             return deviceHistoryDatas;
         }
     }
+    class QueryAllDevice extends AsyncTask<Void, Boolean, List<DeviceInfo>> {
 
+        @Override
+        protected void onPostExecute(List<DeviceInfo> deviceHistoryDatas) {
+            super.onPostExecute(deviceHistoryDatas);
+
+            allDevice = deviceHistoryDatas;
+            // Update View
+            if (allDevice!=null && !allDevice.isEmpty()){
+                selectedDevId = allDevice.get(0).getDeviceid();
+                queryCurrentDev();
+            }
+
+        }
+
+        @Override
+        protected List<DeviceInfo> doInBackground(Void... voids) {
+            List<DeviceInfo> deviceInfos = null;
+            try {
+                deviceInfos = new DevInfoDao().getAllWithLimit(100);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+            return deviceInfos;
+        }
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();

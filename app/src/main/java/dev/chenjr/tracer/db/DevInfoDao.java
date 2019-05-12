@@ -26,4 +26,15 @@ public class DevInfoDao {
         }
         return deviceInfos;
     }
+
+    public DeviceInfo getByID(String devId){
+        DeviceInfo deviceInfo = null;
+        QueryBuilder queryBuilder = devInfoDao.queryBuilder();
+        try {
+            deviceInfo = (DeviceInfo) queryBuilder.where().eq("deviceid",devId).queryForFirst();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return deviceInfo;
+    }
 }
