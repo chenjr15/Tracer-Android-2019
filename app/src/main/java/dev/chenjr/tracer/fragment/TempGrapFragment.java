@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -22,6 +24,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import dev.chenjr.tracer.R;
 import dev.chenjr.tracer.bean.DeviceHistoryData;
@@ -29,13 +32,34 @@ import dev.chenjr.tracer.bean.DeviceInfo;
 import dev.chenjr.tracer.db.DevInfoDao;
 import dev.chenjr.tracer.db.DeviceHistoryDataDao;
 import dev.chenjr.tracer.utils.Util;
+import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
+import in.galaxyofandroid.spinerdialog.SpinnerDialog;
 
 import static com.github.mikephil.charting.components.XAxis.XAxisPosition.BOTTOM_INSIDE;
 
-public class TempGrapFragment extends BaseFragment {
+public class TempGrapFragment extends BaseFragment implements OnSpinerItemClick {
     private Unbinder unbinder;
     @BindView(R.id.chart_temp)
     LineChart chart;
+    @BindView(R.id.btn_frag_temp_chose_another)
+    Button choseAnother;
+    @BindView(R.id.tv_item_dev_info_dev_id)
+    TextView tvDevId;
+    @BindView(R.id.tv_item_dev_info_cno)
+    TextView tvConNo;
+    @BindView(R.id.tv_item_dev_info_sn)
+    TextView tvSn;
+    @BindView(R.id.tv_item_dev_info_model)
+    TextView tvModel;
+    @BindView(R.id.tv_item_dev_info_iccid_no)
+    TextView tvICCID;
+    @BindView(R.id.tv_item_dev_info_remark)
+    TextView tvRemark;
+    @BindView(R.id.tv_item_dev_info_create_time)
+    TextView tvLastModTime;
+    @BindView(R.id.tv_item_dev_info_create_user)
+    TextView tvLastModUser;
+    DeviceInfo selectedDevice;
     String selectedDevId;
     List<DeviceInfo> allDevice;
     private List<DeviceHistoryData> tempInList;
@@ -63,7 +87,40 @@ public class TempGrapFragment extends BaseFragment {
         new QueryAllDevice().execute();
 
     }
-    void queryCurrentDev(){
+
+    @OnClick(R.id.btn_frag_temp_chose_another)
+    public void onChoseAnother(View view) {
+        ArrayList<String> items = new ArrayList<>();
+        for (DeviceInfo selectedDevice : allDevice) {
+            items.add(selectedDevice.getDeviceid());
+        }
+
+        SpinnerDialog spinnerDialog =
+                new SpinnerDialog(
+                        getActivity(),
+                        items,
+                        getString(R.string.select_by_id),
+                        R.style.DialogAnimations_SmileWindow,
+                        getString(R.string.cnacel));// With No Animation
+        spinnerDialog.setCancellable(true); // for cancellable
+//        spinnerDialog.setShowKeyboard(false);
+        spinnerDialog.bindOnSpinerListener(this);
+        spinnerDialog.showSpinerDialog();
+    }
+
+    void queryCurrentDev() {
+
+        if (selectedDevice != null){
+            selectedDevId = selectedDevice.getDeviceid();
+            tvConNo.setText(selectedDevice.getContainerNo());
+            tvDevId.setText(selectedDevice.getDeviceid());
+            tvLastModTime.setText(Util.timeago(selectedDevice.getCreateTime()));
+            tvLastModUser.setText(selectedDevice.getCreateUser());
+            tvModel.setText(selectedDevice.getModel());
+            tvICCID.setText(selectedDevice.getDevIccid());
+            tvSn.setText(selectedDevice.getSerialNumber());
+            tvRemark.setText(selectedDevice.getRemark());
+        }
         new QueryDeviceHistoryDataTask().execute();
         new QueryTempOutTask().execute();
     }
@@ -75,6 +132,8 @@ public class TempGrapFragment extends BaseFragment {
 
         List<Entry> tempInList = new ArrayList<>();
         List<Entry> tempOutList = new ArrayList<>();
+        lineData = new LineData();
+
 
         for (DeviceHistoryData data : this.tempInList) {
             if (data.getTemperIn() > 0) {
@@ -111,6 +170,13 @@ public class TempGrapFragment extends BaseFragment {
         chart.invalidate(); // refresh
     }
 
+    @Override
+    public void onClick(String item, int position) {
+        selectedDevice = allDevice.get(position);
+        updateChart();
+
+    }
+
     class QueryDeviceHistoryDataTask extends AsyncTask<Void, Boolean, List<DeviceHistoryData>> {
 
         @Override
@@ -118,7 +184,7 @@ public class TempGrapFragment extends BaseFragment {
             super.onPostExecute(deviceHistoryDatas);
 
             tempInList = deviceHistoryDatas;
-            updateChart();
+            queryCurrentDev();
 
         }
 
@@ -160,6 +226,7 @@ public class TempGrapFragment extends BaseFragment {
             return deviceHistoryDatas;
         }
     }
+
     class QueryAllDevice extends AsyncTask<Void, Boolean, List<DeviceInfo>> {
 
         @Override
@@ -168,8 +235,9 @@ public class TempGrapFragment extends BaseFragment {
 
             allDevice = deviceHistoryDatas;
             // Update View
-            if (allDevice!=null && !allDevice.isEmpty()){
+            if (allDevice != null && !allDevice.isEmpty()) {
                 selectedDevId = allDevice.get(0).getDeviceid();
+                selectedDevice = allDevice.get(0);
                 queryCurrentDev();
             }
 
@@ -177,17 +245,18 @@ public class TempGrapFragment extends BaseFragment {
 
         @Override
         protected List<DeviceInfo> doInBackground(Void... voids) {
-            List<DeviceInfo> deviceInfos = null;
+            List<DeviceInfo> selectedDevices = null;
             try {
-                deviceInfos = new DevInfoDao().getAllWithLimit(100);
+                selectedDevices = new DevInfoDao().getAllWithLimit(100);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
 
 
-            return deviceInfos;
+            return selectedDevices;
         }
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
