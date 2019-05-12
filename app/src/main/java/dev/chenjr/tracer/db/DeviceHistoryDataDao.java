@@ -14,13 +14,71 @@ public class DeviceHistoryDataDao {
 
     public DeviceHistoryDataDao() throws SQLException {
         this.helper = DatabaseHelper.getHelper();
-        this.historyDataDao = helper.getDao(DeviceHistoryDataDao.class);
+        this.historyDataDao = helper.getDao(DeviceHistoryData.class);
     }
-    public List<DeviceHistoryDataDao> getAllWithLimit(long limit){
-        List<DeviceHistoryDataDao> deviceInfos = null;
+
+    public List<DeviceHistoryData> getAllWithLimit(long limit) {
+        List<DeviceHistoryData> deviceInfos = null;
         QueryBuilder queryBuilder = historyDataDao.queryBuilder();
         try {
             deviceInfos = queryBuilder.limit(limit).query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return deviceInfos;
+    }
+
+    public List<DeviceHistoryData> getTHData(String DeviceID) {
+        List<DeviceHistoryData> deviceInfos = null;
+        QueryBuilder queryBuilder = historyDataDao.queryBuilder();
+        try {
+            // 不排序图表会乱掉
+            if (DeviceID !=null)
+            {
+                //noinspection unchecked
+                deviceInfos = queryBuilder.
+                        orderBy("datatime", true)
+                        .where().isNotNull("temperIn")
+                        .and().eq("deviceid", DeviceID)
+                        .query();
+            }else {
+                //noinspection unchecked
+                deviceInfos = queryBuilder.
+                        orderBy("datatime", true)
+                        .where().isNotNull("temperIn")
+                        .query();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return deviceInfos;
+    }
+
+    /**
+     * 获取所有有外温的数据
+     *
+     * @return
+     */
+    public List<DeviceHistoryData> getTempOutData(String DeviceID) {
+        List<DeviceHistoryData> deviceInfos = null;
+        QueryBuilder queryBuilder = historyDataDao.queryBuilder();
+        try {
+            // 不排序图表会乱掉
+            if (DeviceID !=null)
+            {
+                //noinspection unchecked
+                deviceInfos = queryBuilder.
+                        orderBy("datatime", true)
+                        .where().isNotNull("temperOut")
+                        .and().eq("deviceid", DeviceID)
+                        .query();
+            }else {
+                //noinspection unchecked
+                deviceInfos = queryBuilder.
+                        orderBy("datatime", true)
+                        .where().isNotNull("temperOut")
+                        .query();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -21,6 +21,7 @@ import dev.chenjr.tracer.db.DatabaseHelper;
 import dev.chenjr.tracer.fragment.BaseFragment;
 import dev.chenjr.tracer.fragment.DevInfoFragment;
 import dev.chenjr.tracer.fragment.IndexFragment;
+import dev.chenjr.tracer.fragment.TempGrapFragment;
 import dev.chenjr.tracer.fragment.UserManageFragment;
 import dev.chenjr.tracer.utils.StatusConstant;
 
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity
         // 设置侧边抽屉顶栏的当前用户和邮箱
         headerUserEmail.setText(DatabaseHelper.getHelper().getCurrentUser().getEmail());
         headerUsername.setText(DatabaseHelper.getHelper().getCurrentUser().getName());
+        replaceFragment(StatusConstant.FragmentID.INDEX);
     }
 
     @Override
@@ -147,6 +149,11 @@ public class MainActivity extends AppCompatActivity
             case DEVICE_INFO_MANAGEMENT:
                 toolbar.setTitle(R.string.item_nav_device_config);
                 fragmentObj = DevInfoFragment.newInstance();
+                break;
+
+            case TEMPERATURE_CURVE:
+                toolbar.setTitle(R.string.item_nav_temp_chart);
+                fragmentObj = new TempGrapFragment();
                 break;
             default:
                 toolbar.setTitle(R.string.app_name);

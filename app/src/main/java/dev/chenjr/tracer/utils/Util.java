@@ -1,6 +1,9 @@
 package dev.chenjr.tracer.utils;
 
+import android.text.format.DateFormat;
 import android.text.format.DateUtils;
+
+import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.security.MessageDigest;
 import java.sql.Date;
@@ -40,5 +43,14 @@ public class Util {
         if (date == null)
             return "";
         return DateUtils.getRelativeTimeSpanString(date.getTime(), Calendar.getInstance().getTimeInMillis(), DateUtils.MINUTE_IN_MILLIS).toString();
+    }
+    public static class DateFormater extends ValueFormatter {
+        @Override
+        public String getFormattedValue(float value) {
+            long time = (long) (value*1000);
+            Date date = new Date(time);
+
+            return ""+ DateFormat.format("yy/MM/dd kk:mm",date );
+        }
     }
 }
