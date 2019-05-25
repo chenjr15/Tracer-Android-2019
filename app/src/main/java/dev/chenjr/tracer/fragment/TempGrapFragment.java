@@ -162,8 +162,8 @@ public class TempGrapFragment extends BaseFragment implements OnSpinerItemClick 
 
         LineDataSet tempInDataSet = new LineDataSet(tempInList, "Temperature Inside");
         LineDataSet tempOutDataSet = new LineDataSet(tempOutList, "Temperature Outside");
-        tempInDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-        tempOutDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        tempInDataSet.setMode(LineDataSet.Mode.LINEAR);
+        tempOutDataSet.setMode(LineDataSet.Mode.LINEAR);
         tempOutDataSet.setColor(Color.BLACK);
         tempOutDataSet.setCircleColor(Color.BLACK);
         lineData.removeDataSet(0);
