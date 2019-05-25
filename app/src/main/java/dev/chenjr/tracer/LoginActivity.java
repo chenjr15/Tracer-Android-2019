@@ -109,6 +109,7 @@ public class LoginActivity extends AppCompatActivity {
             } else if (result == LOGIN_SUCCESS) {
                 showSnackbar("Login Success!");
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                finish();
             } else {
                 showSnackbar("Error occurs :(");
 
